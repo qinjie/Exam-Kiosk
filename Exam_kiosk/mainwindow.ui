@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>480</height>
+    <width>818</width>
+    <height>489</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -117,7 +117,49 @@
          </widget>
         </item>
         <item>
-         <widget class="QTableWidget" name="seatTableWidget"/>
+         <widget class="QTableWidget" name="seatTableWidget">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <column>
+           <property name="text">
+            <string>Date</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Time</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Module</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Venue</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Seat</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>PushButton</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -343,7 +385,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>818</width>
      <height>21</height>
     </rect>
    </property>
