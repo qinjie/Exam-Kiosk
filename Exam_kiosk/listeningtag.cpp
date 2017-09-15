@@ -10,9 +10,17 @@ ListeningTag::ListeningTag(QObject *parent) :
 
 void ListeningTag::run() {
     qDebug() << "Thread Run";
+    this->msleep(5000);
+    bool check = true;
     while(1) {
-        emit foundTag("201720519");
-        this->msleep(3000);
+        if (check) {
+            check = false;
+            emit foundTag("201720519");
+        } else {
+            check = true;
+            emit foundTag("999999999");
+        }
+        this->msleep(5000);
     }
 }
 

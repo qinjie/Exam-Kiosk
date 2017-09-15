@@ -24,7 +24,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -40,7 +40,7 @@
            </size>
           </property>
           <property name="title">
-           <string>GroupBox</string>
+           <string/>
           </property>
           <widget class="QLabel" name="label_3">
            <property name="geometry">
@@ -177,9 +177,9 @@
            </size>
           </property>
           <property name="title">
-           <string>GroupBox</string>
+           <string/>
           </property>
-          <widget class="QLabel" name="label_13">
+          <widget class="QLabel" name="toiletScanLabel">
            <property name="geometry">
             <rect>
              <x>590</x>
@@ -295,7 +295,7 @@
            </size>
           </property>
           <property name="title">
-           <string>GroupBox</string>
+           <string/>
           </property>
           <widget class="QLabel" name="label_18">
            <property name="geometry">
