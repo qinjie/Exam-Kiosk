@@ -3,7 +3,6 @@
 
 #include "QDebug"
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -31,6 +30,7 @@ void MainWindow::initRFIDIcon() {
 
 void MainWindow::handleTag(QString id) {
     qDebug() << "Handle Tag ID : " << id << "Tab " << ui->tabWidget->currentIndex();
+    getInfor(id);
     int tab = ui->tabWidget->currentIndex();
     switch(tab) {
         case 0:
@@ -50,6 +50,28 @@ void MainWindow::handleTag(QString id) {
     }
 }
 
+//get infor of Student/Staff
+void MainWindow::getInfor(QString id) {
+    qDebug() << "   On Link Get Infor";
+    QString url = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/user/";
+    url.append(id);
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResultGetInfor(QNetworkReply*)));
+    manager->get(QNetworkRequest(QUrl(url)));
+}
+
+void MainWindow::onResultGetInfor(QNetworkReply *reply) {
+    qDebug() << "       On result Get Infor";
+    QByteArray bytes = reply->readAll();
+    QString data = bytes;
+    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
+    QJsonObject obj = doc.array().at(0).toObject();
+    ui->seatLEStudentNo->setText(obj["card"].toString());
+    ui->seatLEStudentName->setText(obj["name"].toString());
+    qDebug() << "Card : " << obj["card"].toString() << "Name : " << obj["name"].toString();
+}
+
+
 //get Data from server through API by ID (StudentID)
 void MainWindow::examSeatingSearching(QString id) {
     qDebug() << "   On Link Exam Seating Searching";
@@ -60,26 +82,121 @@ void MainWindow::examSeatingSearching(QString id) {
     manager->get(QNetworkRequest(QUrl(url)));
 }
 
+void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
+    qDebug() << "       On result Exam Seating Searching";
+    clearContentsTable(0);
+    //Read data return on reply
+    QByteArray bytes = reply->readAll();
+    QString data = bytes;
+    QString str = QString::fromUtf8(bytes.data(), bytes.size());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (statusCode != 200) {
+        qDebug() << "           Next work Error on Result Exam Seating";
+        return;
+    } else {
+        qDebug() << "           Read successfull on Exam seating Checking!" << statusCode << " : " << str;
+    }
+    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
+    QJsonArray jsonArray = doc.array();
+    foreach (const QJsonValue & value, jsonArray) {
+        QJsonObject obj = value.toObject();
+        QString str = obj["date"].toString() + obj["start_time"].toString() + obj["venue"].toString()
+                        + obj["seat"].toString();
+        qDebug() << str;
+        int rowCount = ui->seatTableWidget->rowCount();
+        ui->seatTableWidget->insertRow(rowCount);
+        qDebug() << "Row Count : " << rowCount;
+        ui->seatTableWidget->setItem(rowCount, 0 , new QTableWidgetItem(obj["date"].toString()));
+        ui->seatTableWidget->setItem(rowCount, 1 , new QTableWidgetItem(obj["start_time"].toString()));
+        ui->seatTableWidget->setItem(rowCount, 2 , new QTableWidgetItem(obj["module"].toString()));
+        ui->seatTableWidget->setItem(rowCount, 3 , new QTableWidgetItem(obj["venue"].toString()));
+        ui->seatTableWidget->setItem(rowCount, 4 , new QTableWidgetItem(obj["seat"].toString()));
+    }
+}
+
 void MainWindow::toiletTripsChecking(QString id){
-    if (isWaitingForTeacher) {
-        qDebug() << "   On Toilet Trip checking waiting for staff";
-        if (currentStudentID != NULL && currentStudentID != "" && currentStudentID == id) {
-            qDebug() << "The same ID of Student";
+    if (!isHandleForToiletCheck) {
+        isHandleForToiletCheck = true;
+        if (isWaitingForTeacher) {
+            qDebug() << "   On Toilet Trip checking waiting for staff";
+            if (currentStudentID != NULL && currentStudentID != "" && currentStudentID == id) {
+                qDebug() << "The same ID of Student";
+            } else {
+                toiletTripsGoOut(currentStudentID, id);
+                isWaitingForTeacher = false;
+                currentStudentID = "";
+                ui->toiletScanLabel->setText("Scan Student card");
+            }
         } else {
-            toiletTripsGoOut(currentStudentID, id);
-            isWaitingForTeacher = false;
-            currentStudentID = "";
-            ui->toiletScanLabel->setText("Scan Student card");
+            qDebug() << "   On Toilet Trip Checking Get List to check -> two case : goIn or Check to goOut";
+            currentStudentID = id;
+            QString url = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet/";
+            url.append(id);
+            QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+            connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResultToiletTripsChecking(QNetworkReply*)));
+            manager->get(QNetworkRequest(QUrl(url)));
         }
     } else {
-        qDebug() << "   On Toilet Trip Checking Get List to check -> two case : goIn or Check to goOut";
-        currentStudentID = id;
-        QString url = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet/";
-        url.append(id);
-        QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-        connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResultToiletTripsChecking(QNetworkReply*)));
-        manager->get(QNetworkRequest(QUrl(url)));
+        qDebug() << "System is handling, please wait!";
     }
+}
+
+void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
+    qDebug() << "       On result Toilet trip checking -> check want go out or go in";
+    //Read list of toilet trip return on reply
+    QByteArray bytes = reply->readAll();
+    QString data = bytes;
+    QString str = QString::fromUtf8(bytes.data(), bytes.size());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (statusCode != 200) {
+        qDebug() << "           Next work Error on toilet trip checking";
+        return;
+    } else {
+        qDebug() << "           Read successfull on toilet trip checking!" << statusCode << " : " << str;
+    }
+
+    bool goOut = true;
+    //QString sender_card;
+    clearContentsTable(1);
+    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
+
+    if (!doc.isArray()) {
+        qDebug() << "Toi let Trip get Fail";
+        return;
+    }
+
+    QJsonArray jsonArray = doc.array();
+    foreach (const QJsonValue & value, jsonArray) {
+        QJsonObject obj = value.toObject();
+        QString str = obj["card"].toString() + obj["name"].toString() + obj["time_out"].toString()
+                        + obj["time_in"].toString() + obj["sender"].toBool();
+        //qDebug() << str;
+        if (obj["sender"].toBool()) {
+            //sender_card = obj["card"].toString();
+            if (obj["time_out"].toString() != NULL && obj["time_in"].toString() == "None") {
+                goOut = false;
+                qDebug() << "Student go In";
+            }
+            //qDebug() << "Time in/out : " <<obj["time_out"].toString() << " " << obj["time_in"].toString();
+        }
+        int rowCount = ui->toiletTableWidget->rowCount();
+        ui->toiletTableWidget->insertRow(rowCount);
+        //qDebug() << "Row Count : " << rowCount;
+        ui->toiletTableWidget->setItem(rowCount, 0 , new QTableWidgetItem(obj["card"].toString()));
+        ui->toiletTableWidget->setItem(rowCount, 1 , new QTableWidgetItem(obj["name"].toString()));
+        ui->toiletTableWidget->setItem(rowCount, 2 , new QTableWidgetItem(obj["time_out"].toString()));
+        ui->toiletTableWidget->setItem(rowCount, 3 , new QTableWidgetItem(obj["time_in"].toString()));
+        ui->toiletTableWidget->setItem(rowCount, 4 , new QTableWidgetItem(obj["staff"].toString()));
+    }
+    if (goOut) {
+        qDebug() << "Please insert the Staff card";
+        ui->toiletScanLabel->setText("Scan Staff card");
+        isWaitingForTeacher = true;
+    } else {
+        qDebug() << "User come back";
+        toiletTripsGoIn(currentStudentID);
+    }
+    isHandleForToiletCheck = false;
 }
 
 void MainWindow::toiletTripsGoIn(QString id) {
@@ -161,6 +278,55 @@ void MainWindow::onResultToiletTripsGoOut(QNetworkReply *reply) {
     } else {
         qDebug() << "           Read successfull in certificate go out!" << statusCode << " : " << str;
     }
+    //qDebug() << "   On Toilet Trip Checking Get List to check -> two case : goIn or Check to goOut";
+    //currentStudentID = id;
+    QString url = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet/";
+    url.append(currentStudentID);
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResultToiletTripsChecking(QNetworkReply*)));
+    manager->get(QNetworkRequest(QUrl(url)));
+}
+
+void MainWindow::onResultToiletTripsGoInFetchData(QNetworkReply *reply) {
+    qDebug() << "       On result Toilet trip Go In Fetch Data";
+    //Read list of toilet trip return on reply
+    QByteArray bytes = reply->readAll();
+    QString data = bytes;
+    QString str = QString::fromUtf8(bytes.data(), bytes.size());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (statusCode != 200) {
+        qDebug() << "           Next work Error on toilet trip Go In Fetch Data";
+        return;
+    } else {
+        qDebug() << "           Read successfull on toilet trip Go In Fetch Data!" << statusCode << " : " << str;
+    }
+
+    bool goOut = true;
+    //QString sender_card;
+    clearContentsTable(1);
+    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
+    QJsonArray jsonArray = doc.array();
+    foreach (const QJsonValue & value, jsonArray) {
+        QJsonObject obj = value.toObject();
+        QString str = obj["card"].toString() + obj["name"].toString() + obj["time_out"].toString()
+                        + obj["time_in"].toString() + obj["sender"].toBool();
+//        //qDebug() << str;
+//        if (obj["sender"].toBool()) {
+//            //sender_card = obj["card"].toString();
+//            if (obj["time_out"].toString() != NULL && obj["time_in"].toString() == "None") {
+//                goOut = false;
+//                qDebug() << "Student go In";
+//            }
+//            //qDebug() << "Time in/out : " <<obj["time_out"].toString() << " " << obj["time_in"].toString();
+//        }
+        int rowCount = ui->toiletTableWidget->rowCount();
+        ui->toiletTableWidget->insertRow(rowCount);
+        ui->toiletTableWidget->setItem(rowCount, 0 , new QTableWidgetItem(obj["card"].toString()));
+        ui->toiletTableWidget->setItem(rowCount, 1 , new QTableWidgetItem(obj["name"].toString()));
+        ui->toiletTableWidget->setItem(rowCount, 2 , new QTableWidgetItem(obj["time_out"].toString()));
+        ui->toiletTableWidget->setItem(rowCount, 3 , new QTableWidgetItem(obj["time_in"].toString()));
+        ui->toiletTableWidget->setItem(rowCount, 4 , new QTableWidgetItem(obj["staff"].toString()));
+    }
 }
 
 void MainWindow::submissonScriptChecking(QString id) {
@@ -217,96 +383,6 @@ void MainWindow::onResultSubmissonScriptChecking(QNetworkReply *reply) {
         ui->subTableWidget->setItem(rowCount, 1 , new QTableWidgetItem(obj["name"].toString()));
         ui->subTableWidget->setItem(rowCount, 2 , new QTableWidgetItem(obj["module"].toString()));
         ui->subTableWidget->setItem(rowCount, 3 , new QTableWidgetItem(obj["submission_time"].toString()));
-    }
-}
-
-void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
-    qDebug() << "       On result Exam Seating Searching";
-    clearContentsTable(0);
-    //Read data return on reply
-    QByteArray bytes = reply->readAll();
-    QString data = bytes;
-    QString str = QString::fromUtf8(bytes.data(), bytes.size());
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    if (statusCode != 200) {
-        qDebug() << "           Next work Error on Result Exam Seating";
-        return;
-    } else {
-        qDebug() << "           Read successfull on Exam seating Checking!" << statusCode << " : " << str;
-    }
-    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
-    QJsonArray jsonArray = doc.array();
-    foreach (const QJsonValue & value, jsonArray) {
-        QJsonObject obj = value.toObject();
-        QString str = obj["date"].toString() + obj["start_time"].toString() + obj["venue"].toString()
-                        + obj["seat"].toString();
-        qDebug() << str;
-        int rowCount = ui->seatTableWidget->rowCount();
-        ui->seatTableWidget->insertRow(rowCount);
-        qDebug() << "Row Count : " << rowCount;
-        ui->seatTableWidget->setItem(rowCount, 0 , new QTableWidgetItem(obj["date"].toString()));
-        ui->seatTableWidget->setItem(rowCount, 1 , new QTableWidgetItem(obj["start_time"].toString()));
-        ui->seatTableWidget->setItem(rowCount, 2 , new QTableWidgetItem(obj["module"].toString()));
-        ui->seatTableWidget->setItem(rowCount, 3 , new QTableWidgetItem(obj["venue"].toString()));
-        ui->seatTableWidget->setItem(rowCount, 4 , new QTableWidgetItem(obj["seat"].toString()));
-    }
-}
-
-void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
-    qDebug() << "       On result Toilet trip checking -> check want go out or go in";
-
-    //Read list of toilet trip return on reply
-    QByteArray bytes = reply->readAll();
-    QString data = bytes;
-    QString str = QString::fromUtf8(bytes.data(), bytes.size());
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    if (statusCode != 200) {
-        qDebug() << "           Next work Error on toilet trip checking";
-        return;
-    } else {
-        qDebug() << "           Toilet Trip Read successfull!";// << statusCode << " : " << str;
-    }
-
-    bool goOut = true;
-    //QString sender_card;
-    clearContentsTable(1);
-    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
-
-    if (!doc.isArray()) {
-        qDebug() << "Toi let Trip get Fail";
-        return;
-    }
-
-    QJsonArray jsonArray = doc.array();
-    foreach (const QJsonValue & value, jsonArray) {
-        QJsonObject obj = value.toObject();
-        QString str = obj["card"].toString() + obj["name"].toString() + obj["time_out"].toString()
-                        + obj["time_in"].toString() + obj["sender"].toBool();
-        //qDebug() << str;
-        if (obj["sender"].toBool()) {
-            //sender_card = obj["card"].toString();
-            if (obj["time_out"].toString() != NULL && obj["time_in"].toString() == "None") {
-                goOut = false;
-                //qDebug() << "Student go In";
-            }
-            //qDebug() << "Time in/out : " <<obj["time_out"].toString() << " " << obj["time_in"].toString();
-        }
-        int rowCount = ui->toiletTableWidget->rowCount();
-        ui->toiletTableWidget->insertRow(rowCount);
-        //qDebug() << "Row Count : " << rowCount;
-        ui->toiletTableWidget->setItem(rowCount, 0 , new QTableWidgetItem(obj["card"].toString()));
-        ui->toiletTableWidget->setItem(rowCount, 1 , new QTableWidgetItem(obj["name"].toString()));
-        ui->toiletTableWidget->setItem(rowCount, 2 , new QTableWidgetItem(obj["time_out"].toString()));
-        ui->toiletTableWidget->setItem(rowCount, 3 , new QTableWidgetItem(obj["time_in"].toString()));
-        ui->toiletTableWidget->setItem(rowCount, 4 , new QTableWidgetItem(obj["staff"].toString()));
-    }
-    if (goOut) {
-        qDebug() << "Please insert the Staff card";
-        ui->toiletScanLabel->setText("Scan Staff card");
-        isWaitingForTeacher = true;
-    } else {
-        qDebug() << "User come back";
-        toiletTripsGoIn(currentStudentID);
     }
 }
 

@@ -19,14 +19,14 @@ public:
     void        initRFIDIcon();
     void        initTable();
 
+    void        getInfor(QString id);
     void        examSeatingSearching(QString id);
     void        toiletTripsChecking(QString id);
     void        toiletTripsGoIn(QString id);
     void        submissonScriptChecking(QString id);
-
     void        toiletTripsGoOut(QString studentRFID, QString staffRFID);
-
     void        clearContentsTable(int tab);
+
     bool        checkStudentToiletOut(QString card);
 
     ~MainWindow();
@@ -37,9 +37,11 @@ private slots:
     void        handleTag(QString id);
     void        tabSelected();
 
+    void        onResultGetInfor(QNetworkReply*);
     void        onResultexamSeatingSearching(QNetworkReply*);
     void        onResultToiletTripsChecking(QNetworkReply*);
     void        onResultToiletTripsGoIn(QNetworkReply*);
+    void        onResultToiletTripsGoInFetchData(QNetworkReply*);
     void        onResultSubmissonScriptChecking(QNetworkReply*);
 
     void        onResultToiletTripsGoOut(QNetworkReply*);
@@ -51,6 +53,7 @@ protected:
 private:
     Ui::MainWindow      *ui;
     bool                listenForTag;
+    bool                isHandleForToiletCheck = false;
     ListeningTag        *listeningTag;
     QStringList         listStudentToiletOut;
     bool                isWaitingForTeacher;
