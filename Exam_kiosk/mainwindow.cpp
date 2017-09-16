@@ -52,7 +52,7 @@ void MainWindow::handleTag(QString id) {
 
 //get Data from server through API by ID (StudentID)
 void MainWindow::examSeatingSearching(QString id) {
-    qDebug() << "Exam Seating Searching";
+    qDebug() << "   On Link Exam Seating Searching";
     QString url = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/seat/";
     url.append(id);
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
@@ -61,19 +61,18 @@ void MainWindow::examSeatingSearching(QString id) {
 }
 
 void MainWindow::toiletTripsChecking(QString id){
-
     if (isWaitingForTeacher) {
-        qDebug() << "Waiting for staff";
+        qDebug() << "   On Toilet Trip checking waiting for staff";
         if (currentStudentID != NULL && currentStudentID != "" && currentStudentID == id) {
             qDebug() << "The same ID of Student";
         } else {
-            toiletTripsInsert(currentStudentID, id);
+            toiletTripsGoOut(currentStudentID, id);
             isWaitingForTeacher = false;
             currentStudentID = "";
             ui->toiletScanLabel->setText("Scan Student card");
         }
     } else {
-        qDebug() << "Toilet Trip Checking -- two case : goIn or Check to goOut";
+        qDebug() << "   On Toilet Trip Checking Get List to check -> two case : goIn or Check to goOut";
         currentStudentID = id;
         QString url = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet/";
         url.append(id);
@@ -84,7 +83,7 @@ void MainWindow::toiletTripsChecking(QString id){
 }
 
 void MainWindow::toiletTripsGoIn(QString id) {
-    qDebug() << "Toilet Trip Student Go In";
+    qDebug() << "   On Link Toilet Trip Student Go In";
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResultToiletTripsGoIn(QNetworkReply*)));
 
@@ -97,7 +96,7 @@ void MainWindow::toiletTripsGoIn(QString id) {
     QByteArray postDataSize = QByteArray::number(jsonString.size());
 
     // Time for building request
-    QUrl serviceURL("https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet");
+    QUrl serviceURL("https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet/update");
     QNetworkRequest request(serviceURL);
 
     // Add the headers specifying their names and their values with the following method : void QNetworkRequest::setRawHeader(const QByteArray & headerName, const QByteArray & headerValue);
@@ -110,22 +109,22 @@ void MainWindow::toiletTripsGoIn(QString id) {
 }
 
 void MainWindow::onResultToiletTripsGoIn(QNetworkReply *reply) {
-    qDebug() << "On Result Toilet Trip go In";
+    qDebug() << "       On Result Toilet Trip go In";
     QByteArray bytes = reply->readAll();
     QString str = QString::fromUtf8(bytes.data(), bytes.size());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode != 200) {
-        qDebug() << "Result : " << str;
+        qDebug() << "           Result : " << str;
         return;
     } else {
-        qDebug() << "Toilet Trip go in successfull!" << statusCode << " : " << str;
+        qDebug() << "           Toilet Trip go in successfull!" << statusCode << " : " << str;
     }
 }
 
-void MainWindow::toiletTripsInsert(QString studentID, QString staffID) {
-    qDebug() << "Toilet Trip Inserting";
+void MainWindow::toiletTripsGoOut(QString studentID, QString staffID) {
+    qDebug() << "   On Link Toilet Trip cerificate  Go Out";
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResultToiletTripsInserting(QNetworkReply*)));
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResultToiletTripsGoOut(QNetworkReply*)));
 
     // Build your JSON string as usual
     QByteArray jsonString; //"201720519" +  + "999999999" + ;
@@ -150,21 +149,22 @@ void MainWindow::toiletTripsInsert(QString studentID, QString staffID) {
     manager->post(request, jsonString);
 }
 
-void MainWindow::onResultToiletTripsInserting(QNetworkReply *reply) {
+void MainWindow::onResultToiletTripsGoOut(QNetworkReply *reply) {
+    qDebug() << "       On Result Toilet Trip Certificate Go Out";
     QByteArray bytes = reply->readAll();
     QString data = bytes;
     QString str = QString::fromUtf8(bytes.data(), bytes.size());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode != 200) {
-        qDebug() << "Next work Error";
+        qDebug() << "           Next work Error in certificate go out!";
         return;
     } else {
-        qDebug() << "Read successfull!" << statusCode << " : " << str;
+        qDebug() << "           Read successfull in certificate go out!" << statusCode << " : " << str;
     }
 }
 
 void MainWindow::submissonScriptChecking(QString id) {
-    qDebug() << "On submission Script checking";
+    qDebug() << "   On Link submission Script checking";
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onResultSubmissonScriptChecking(QNetworkReply*)));
 
@@ -190,16 +190,16 @@ void MainWindow::submissonScriptChecking(QString id) {
 }
 
 void MainWindow::onResultSubmissonScriptChecking(QNetworkReply *reply) {
-    qDebug() << "On result Submission Script Checking";
+    qDebug() << "       On result Submission Script Checking";
     QByteArray bytes = reply->readAll();
     QString str = QString::fromUtf8(bytes.data(), bytes.size());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode != 200) {
-        qDebug() << "Interal System error";
-        qDebug() << "   on result : " << str;
+        qDebug() << "           Interal System error";
+        qDebug() << "               on result : " << str;
         return;
     } else {
-        qDebug() << "Toilet Trip go in successfull!" << statusCode << " : " << str;
+        qDebug() << "           Toilet Trip go in successfull!" << statusCode << " : " << str;
         //qDebug() << "   on result : " << str;
     }
     QString data = bytes;
@@ -221,7 +221,7 @@ void MainWindow::onResultSubmissonScriptChecking(QNetworkReply *reply) {
 }
 
 void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
-    qDebug() << "On result Exam Seating Searching";
+    qDebug() << "       On result Exam Seating Searching";
     clearContentsTable(0);
     //Read data return on reply
     QByteArray bytes = reply->readAll();
@@ -229,10 +229,10 @@ void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
     QString str = QString::fromUtf8(bytes.data(), bytes.size());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode != 200) {
-        qDebug() << "Next work Error";
+        qDebug() << "           Next work Error on Result Exam Seating";
         return;
     } else {
-        qDebug() << "Read successfull!" << statusCode << " : " << str;
+        qDebug() << "           Read successfull on Exam seating Checking!" << statusCode << " : " << str;
     }
     QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
     QJsonArray jsonArray = doc.array();
@@ -253,7 +253,7 @@ void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
 }
 
 void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
-    qDebug() << "On result Toilet trip checking";
+    qDebug() << "       On result Toilet trip checking -> check want go out or go in";
 
     //Read list of toilet trip return on reply
     QByteArray bytes = reply->readAll();
@@ -261,10 +261,10 @@ void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
     QString str = QString::fromUtf8(bytes.data(), bytes.size());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode != 200) {
-        qDebug() << "Next work Error";
+        qDebug() << "           Next work Error on toilet trip checking";
         return;
     } else {
-        qDebug() << "Toilet Trip Read successfull!";// << statusCode << " : " << str;
+        qDebug() << "           Toilet Trip Read successfull!";// << statusCode << " : " << str;
     }
 
     bool goOut = true;
@@ -309,8 +309,6 @@ void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
         toiletTripsGoIn(currentStudentID);
     }
 }
-
-
 
 void MainWindow::clearContentsTable(int tab) {
     switch(tab) {
@@ -388,7 +386,6 @@ void MainWindow::showEvent(QShowEvent *event) {
 void MainWindow::resizeEvent(QResizeEvent* event)
 {
    QMainWindow::resizeEvent(event);
-   // Your code here.
    resizeTable();
 }
 

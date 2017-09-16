@@ -24,7 +24,7 @@ public:
     void        toiletTripsGoIn(QString id);
     void        submissonScriptChecking(QString id);
 
-    void        toiletTripsInsert(QString studentRFID, QString staffRFID);
+    void        toiletTripsGoOut(QString studentRFID, QString staffRFID);
 
     void        clearContentsTable(int tab);
     bool        checkStudentToiletOut(QString card);
@@ -42,7 +42,7 @@ private slots:
     void        onResultToiletTripsGoIn(QNetworkReply*);
     void        onResultSubmissonScriptChecking(QNetworkReply*);
 
-    void        onResultToiletTripsInserting(QNetworkReply*);
+    void        onResultToiletTripsGoOut(QNetworkReply*);
 
 protected:
     void        showEvent(QShowEvent *event);

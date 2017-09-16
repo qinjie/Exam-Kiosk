@@ -20,7 +20,7 @@ void ListeningTag::run() {
             check = true;
             emit foundTag("999999999");
         }
-        this->msleep(5000);
+        this->msleep(20000);
     }
 }
 
