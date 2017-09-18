@@ -327,6 +327,7 @@ void MainWindow::onResultToiletTripsGoIn(QNetworkReply *reply) {
     clearContentsTable(1);
     QJsonArray jsonArray = doc.array();
     drawTableData(jsonArray, 1);
+    ui->toiletScanLabel->setText("Scan Student Card");
     isHandleForToiletCheck = false;
 }
 
