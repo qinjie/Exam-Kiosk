@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>818</width>
-    <height>489</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -51,6 +51,9 @@
              <height>20</height>
             </rect>
            </property>
+           <property name="styleSheet">
+            <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;; color: blue</string>
+           </property>
            <property name="text">
             <string>Scan Student Card</string>
            </property>
@@ -71,8 +74,8 @@
           <widget class="QLabel" name="label_2">
            <property name="geometry">
             <rect>
-             <x>40</x>
-             <y>70</y>
+             <x>30</x>
+             <y>60</y>
              <width>91</width>
              <height>16</height>
             </rect>
@@ -84,8 +87,8 @@
           <widget class="QLabel" name="label">
            <property name="geometry">
             <rect>
-             <x>40</x>
-             <y>40</y>
+             <x>30</x>
+             <y>30</y>
              <width>91</width>
              <height>16</height>
             </rect>
@@ -97,8 +100,8 @@
           <widget class="QLineEdit" name="seatLEStudentName">
            <property name="geometry">
             <rect>
-             <x>130</x>
-             <y>70</y>
+             <x>120</x>
+             <y>60</y>
              <width>181</width>
              <height>20</height>
             </rect>
@@ -107,8 +110,8 @@
           <widget class="QLineEdit" name="seatLEStudentNo">
            <property name="geometry">
             <rect>
-             <x>130</x>
-             <y>40</y>
+             <x>120</x>
+             <y>30</y>
              <width>181</width>
              <height>20</height>
             </rect>
@@ -126,6 +129,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
           </property>
           <column>
            <property name="text">
@@ -154,13 +160,6 @@
           </column>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="pushButton">
-          <property name="text">
-           <string>PushButton</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_2">
@@ -187,6 +186,9 @@
              <width>171</width>
              <height>20</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;; color: blue</string>
            </property>
            <property name="text">
             <string>Scan Student Card</string>
@@ -305,6 +307,9 @@
              <width>171</width>
              <height>20</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;; color: blue</string>
            </property>
            <property name="text">
             <string>Scan Student Card</string>

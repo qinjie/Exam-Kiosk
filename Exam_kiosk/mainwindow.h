@@ -26,13 +26,15 @@ public:
     void        submissonScriptChecking(QString id);
     void        toiletTripsGoOut(QString studentRFID, QString staffRFID);
     void        clearContentsTable(int tab);
+    void        resetStateToiletTrips();
 
-    bool        checkStudentToiletOut(QString card);
+    void        insertDataToCellTableWithTab(int32_t row, int32_t col, QString data, int32_t tab);
+
+    void        drawTableData(QJsonArray jsonArray, int tab);
 
     ~MainWindow();
 
 private slots:
-    void        on_pushButton_clicked();
     void        resizeTable();
     void        handleTag(QString id);
     void        tabSelected();
@@ -40,8 +42,8 @@ private slots:
     void        onResultGetInfor(QNetworkReply*);
     void        onResultexamSeatingSearching(QNetworkReply*);
     void        onResultToiletTripsChecking(QNetworkReply*);
+    void        toiletTripsUserChecking(QNetworkReply*);
     void        onResultToiletTripsGoIn(QNetworkReply*);
-    void        onResultToiletTripsGoInFetchData(QNetworkReply*);
     void        onResultSubmissonScriptChecking(QNetworkReply*);
 
     void        onResultToiletTripsGoOut(QNetworkReply*);
@@ -55,9 +57,16 @@ private:
     bool                listenForTag;
     bool                isHandleForToiletCheck = false;
     ListeningTag        *listeningTag;
-    QStringList         listStudentToiletOut;
     bool                isWaitingForTeacher;
     QString             currentStudentID;
+    QString             studentIDGoOut;
+
+    QString             seatCheckingURL;
+    QString             toiletTripsGoInURL;
+    QString             toiletTripsGoOutURL;
+    QString             subTripsCheckingURL;
+    QString             getUserInforURL;
+    QString             getListTripsCheckingURL;
 };
 
 #endif // MAINWINDOW_H
