@@ -5,6 +5,7 @@
 #include "listeningtag.h"
 #include "QtNetwork"
 #include "QTableWidget"
+#include "QMessageBox"
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +33,8 @@ public:
 
     void        drawTableData(QJsonArray jsonArray, int tab);
 
+    void        alert(QString title, QString message, int type ,int time);
+
     ~MainWindow();
 
 private slots:
@@ -47,6 +50,8 @@ private slots:
     void        onResultSubmissonScriptChecking(QNetworkReply*);
 
     void        onResultToiletTripsGoOut(QNetworkReply*);
+
+    void        resetMessageAlert();
 
 protected:
     void        showEvent(QShowEvent *event);
@@ -67,6 +72,8 @@ private:
     QString             subTripsCheckingURL;
     QString             getUserInforURL;
     QString             getListTripsCheckingURL;
+
+    QMessageBox         msgBox;
 };
 
 #endif // MAINWINDOW_H

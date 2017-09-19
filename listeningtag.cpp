@@ -25,7 +25,7 @@ void ListeningTag::run() {
         bool press = false;
         int valueBack = digitalRead(0);
         if (valueBack && valueBack != prevValueBack) {
-            //qDebug() << "Press";
+            qDebug() << "Back Press";
             press = true;
             emit foundTag("201720519");
         }
@@ -33,7 +33,7 @@ void ListeningTag::run() {
 
         int valueNext = digitalRead(1);
         if (valueNext && valueNext != prevValueNext) {
-            //qDebug() << "Press";
+            qDebug() << "Next Press";
             press = true;
             emit foundTag("999999999");
         }
