@@ -7,6 +7,8 @@
 QT       += core gui
 QT       += network
 
+LIBS     += -lnfc
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 INCLUDEPATH    += /home/ember/opt/rasp-pi-rootfs/usr/local/include
@@ -27,3 +29,5 @@ FORMS    += mainwindow.ui
 
 RESOURCES += \
     src.qrc
+
+OTHER_FILES +=

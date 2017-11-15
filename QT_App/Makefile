@@ -18,7 +18,7 @@ CXXFLAGS      = -pipe -g -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++ -I../../RPi_Exam_kiosk -I/home/ember/opt/rasp-pi-rootfs/usr/local/include -isystem /usr/include/arm-linux-gnueabihf/qt5 -isystem /usr/include/arm-linux-gnueabihf/qt5/QtWidgets -isystem /usr/include/arm-linux-gnueabihf/qt5/QtNetwork -isystem /usr/include/arm-linux-gnueabihf/qt5/QtGui -isystem /usr/include/arm-linux-gnueabihf/qt5/QtCore -I. -I. -I.
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS) -L/home/ember/opt/rasp-pi-rootfs/usr/local/lib -lwiringPi -lQt5Widgets -lQt5Network -lQt5Gui -lQt5Core -lGLESv2 -lpthread 
+LIBS          = $(SUBLIBS) -lnfc -L/home/ember/opt/rasp-pi-rootfs/usr/local/lib -lwiringPi -lQt5Widgets -lQt5Network -lQt5Gui -lQt5Core -lGLESv2 -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /usr/lib/arm-linux-gnueabihf/qt5/bin/qmake
@@ -298,6 +298,7 @@ compiler_rcc_make_all: qrc_src.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_src.cpp
 qrc_src.cpp: ../src.qrc \
+		../config.ini \
 		../img/rfid.jpg
 	/usr/lib/arm-linux-gnueabihf/qt5/bin/rcc -name src ../src.qrc -o qrc_src.cpp
 

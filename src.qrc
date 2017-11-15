@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>img/rfid.jpg</file>
+        <file>config.ini</file>
     </qresource>
 </RCC>

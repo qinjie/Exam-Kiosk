@@ -13,12 +13,21 @@ MainWindow::MainWindow(QWidget *parent) :
     initRFIDIcon();
     initTable();
 
+    QSettings settings(QString(":/config.ini"), QSettings::IniFormat);
+    seatCheckingURL = settings.value("api/seatCheckingURL", "").toString();
+    toiletTripsGoOutURL = settings.value("api/toiletTripsGoOutURL", "").toString();
+    toiletTripsGoInURL = settings.value("api/toiletTripsGoInURL", "").toString();
+    subTripsCheckingURL = settings.value("api/subTripsCheckingURL", "").toString();
+    getListTripsCheckingURL = settings.value("api/getListTripsCheckingURL", "").toString();
+    getUserInforURL = settings.value("api/getUserInforURL", "").toString();
+    /*
+    qDebug() << "MrDat" << seatCheckingURL;
     seatCheckingURL = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/seat/";
     toiletTripsGoOutURL = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet";
     toiletTripsGoInURL = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet/update";
     subTripsCheckingURL = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/submission";
     getListTripsCheckingURL = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/toilet/";
-    getUserInforURL = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/user/";
+    getUserInforURL = "https://2cdh0n36vg.execute-api.ap-southeast-1.amazonaws.com/api/user/";*/
 
     isWaitingForTeacher = false;
     listeningTag = new ListeningTag(this);

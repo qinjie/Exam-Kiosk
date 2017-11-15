@@ -102,16 +102,16 @@ public:
         seatRFIDIcon->setGeometry(QRect(440, 10, 100, 100));
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(30, 60, 91, 16));
+        label_2->setGeometry(QRect(30, 60, 111, 16));
         label = new QLabel(groupBox);
         label->setObjectName(QStringLiteral("label"));
         label->setGeometry(QRect(30, 30, 91, 16));
         seatLEStudentName = new QLineEdit(groupBox);
         seatLEStudentName->setObjectName(QStringLiteral("seatLEStudentName"));
-        seatLEStudentName->setGeometry(QRect(120, 60, 181, 20));
+        seatLEStudentName->setGeometry(QRect(160, 60, 181, 20));
         seatLEStudentNo = new QLineEdit(groupBox);
         seatLEStudentNo->setObjectName(QStringLiteral("seatLEStudentNo"));
-        seatLEStudentNo->setGeometry(QRect(120, 30, 181, 20));
+        seatLEStudentNo->setGeometry(QRect(160, 30, 181, 20));
 
         verticalLayout->addWidget(groupBox);
 
@@ -158,26 +158,30 @@ public:
         toiletRFIDIcon->setGeometry(QRect(440, 10, 100, 100));
         label_15 = new QLabel(groupBox_3);
         label_15->setObjectName(QStringLiteral("label_15"));
-        label_15->setGeometry(QRect(40, 50, 91, 16));
+        label_15->setGeometry(QRect(40, 50, 111, 16));
         label_16 = new QLabel(groupBox_3);
         label_16->setObjectName(QStringLiteral("label_16"));
         label_16->setGeometry(QRect(40, 20, 91, 16));
         toiletLEStudentName = new QLineEdit(groupBox_3);
         toiletLEStudentName->setObjectName(QStringLiteral("toiletLEStudentName"));
-        toiletLEStudentName->setGeometry(QRect(130, 50, 181, 20));
+        toiletLEStudentName->setGeometry(QRect(190, 50, 181, 20));
         toiletLEStudentNo = new QLineEdit(groupBox_3);
         toiletLEStudentNo->setObjectName(QStringLiteral("toiletLEStudentNo"));
-        toiletLEStudentNo->setGeometry(QRect(130, 20, 181, 20));
+        toiletLEStudentNo->setGeometry(QRect(190, 20, 181, 20));
         label_17 = new QLabel(groupBox_3);
         label_17->setObjectName(QStringLiteral("label_17"));
-        label_17->setGeometry(QRect(40, 80, 71, 16));
+        label_17->setGeometry(QRect(40, 80, 91, 16));
         toiletLELecturerID = new QLineEdit(groupBox_3);
         toiletLELecturerID->setObjectName(QStringLiteral("toiletLELecturerID"));
-        toiletLELecturerID->setGeometry(QRect(130, 80, 181, 20));
+        toiletLELecturerID->setGeometry(QRect(190, 80, 181, 20));
 
         verticalLayout_4->addWidget(groupBox_3);
 
         toiletTableWidget = new QTableWidget(tab_2);
+        if (toiletTableWidget->columnCount() < 1)
+            toiletTableWidget->setColumnCount(1);
+        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
+        toiletTableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem5);
         toiletTableWidget->setObjectName(QStringLiteral("toiletTableWidget"));
 
         verticalLayout_4->addWidget(toiletTableWidget);
@@ -201,20 +205,24 @@ public:
         subRFIDIcon->setGeometry(QRect(440, 10, 100, 100));
         label_20 = new QLabel(groupBox_4);
         label_20->setObjectName(QStringLiteral("label_20"));
-        label_20->setGeometry(QRect(40, 70, 91, 16));
+        label_20->setGeometry(QRect(40, 70, 111, 16));
         label_21 = new QLabel(groupBox_4);
         label_21->setObjectName(QStringLiteral("label_21"));
         label_21->setGeometry(QRect(40, 40, 91, 16));
         subLEStudentName = new QLineEdit(groupBox_4);
         subLEStudentName->setObjectName(QStringLiteral("subLEStudentName"));
-        subLEStudentName->setGeometry(QRect(130, 70, 181, 20));
+        subLEStudentName->setGeometry(QRect(170, 70, 181, 20));
         subLEStudentNo = new QLineEdit(groupBox_4);
         subLEStudentNo->setObjectName(QStringLiteral("subLEStudentNo"));
-        subLEStudentNo->setGeometry(QRect(130, 40, 181, 20));
+        subLEStudentNo->setGeometry(QRect(170, 40, 181, 20));
 
         verticalLayout_5->addWidget(groupBox_4);
 
         subTableWidget = new QTableWidget(tab_3);
+        if (subTableWidget->columnCount() < 1)
+            subTableWidget->setColumnCount(1);
+        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
+        subTableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem6);
         subTableWidget->setObjectName(QStringLiteral("subTableWidget"));
 
         verticalLayout_5->addWidget(subTableWidget);
@@ -237,7 +245,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -268,12 +276,16 @@ public:
         label_15->setText(QApplication::translate("MainWindow", "Student Name:", 0));
         label_16->setText(QApplication::translate("MainWindow", "Student No:", 0));
         label_17->setText(QApplication::translate("MainWindow", "Lecturer ID :", 0));
+        QTableWidgetItem *___qtablewidgetitem5 = toiletTableWidget->horizontalHeaderItem(0);
+        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "New Column", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Toilet Trips", 0));
         groupBox_4->setTitle(QString());
         label_18->setText(QApplication::translate("MainWindow", "Scan Student Card", 0));
         subRFIDIcon->setText(QApplication::translate("MainWindow", "TextLabel", 0));
         label_20->setText(QApplication::translate("MainWindow", "Student Name:", 0));
         label_21->setText(QApplication::translate("MainWindow", "Student No:", 0));
+        QTableWidgetItem *___qtablewidgetitem6 = subTableWidget->horizontalHeaderItem(0);
+        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "New Column", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Early Submission", 0));
     } // retranslateUi
 

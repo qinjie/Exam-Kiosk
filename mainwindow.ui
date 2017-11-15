@@ -24,7 +24,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -76,7 +76,7 @@
             <rect>
              <x>30</x>
              <y>60</y>
-             <width>91</width>
+             <width>111</width>
              <height>16</height>
             </rect>
            </property>
@@ -100,7 +100,7 @@
           <widget class="QLineEdit" name="seatLEStudentName">
            <property name="geometry">
             <rect>
-             <x>120</x>
+             <x>160</x>
              <y>60</y>
              <width>181</width>
              <height>20</height>
@@ -110,7 +110,7 @@
           <widget class="QLineEdit" name="seatLEStudentNo">
            <property name="geometry">
             <rect>
-             <x>120</x>
+             <x>160</x>
              <y>30</y>
              <width>181</width>
              <height>20</height>
@@ -212,7 +212,7 @@
             <rect>
              <x>40</x>
              <y>50</y>
-             <width>91</width>
+             <width>111</width>
              <height>16</height>
             </rect>
            </property>
@@ -236,7 +236,7 @@
           <widget class="QLineEdit" name="toiletLEStudentName">
            <property name="geometry">
             <rect>
-             <x>130</x>
+             <x>190</x>
              <y>50</y>
              <width>181</width>
              <height>20</height>
@@ -246,7 +246,7 @@
           <widget class="QLineEdit" name="toiletLEStudentNo">
            <property name="geometry">
             <rect>
-             <x>130</x>
+             <x>190</x>
              <y>20</y>
              <width>181</width>
              <height>20</height>
@@ -258,7 +258,7 @@
             <rect>
              <x>40</x>
              <y>80</y>
-             <width>71</width>
+             <width>91</width>
              <height>16</height>
             </rect>
            </property>
@@ -269,7 +269,7 @@
           <widget class="QLineEdit" name="toiletLELecturerID">
            <property name="geometry">
             <rect>
-             <x>130</x>
+             <x>190</x>
              <y>80</y>
              <width>181</width>
              <height>20</height>
@@ -279,7 +279,13 @@
          </widget>
         </item>
         <item>
-         <widget class="QTableWidget" name="toiletTableWidget"/>
+         <widget class="QTableWidget" name="toiletTableWidget">
+          <column>
+           <property name="text">
+            <string>New Column</string>
+           </property>
+          </column>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -333,7 +339,7 @@
             <rect>
              <x>40</x>
              <y>70</y>
-             <width>91</width>
+             <width>111</width>
              <height>16</height>
             </rect>
            </property>
@@ -357,7 +363,7 @@
           <widget class="QLineEdit" name="subLEStudentName">
            <property name="geometry">
             <rect>
-             <x>130</x>
+             <x>170</x>
              <y>70</y>
              <width>181</width>
              <height>20</height>
@@ -367,7 +373,7 @@
           <widget class="QLineEdit" name="subLEStudentNo">
            <property name="geometry">
             <rect>
-             <x>130</x>
+             <x>170</x>
              <y>40</y>
              <width>181</width>
              <height>20</height>
@@ -377,7 +383,13 @@
          </widget>
         </item>
         <item>
-         <widget class="QTableWidget" name="subTableWidget"/>
+         <widget class="QTableWidget" name="subTableWidget">
+          <column>
+           <property name="text">
+            <string>New Column</string>
+           </property>
+          </column>
+         </widget>
         </item>
        </layout>
       </widget>
