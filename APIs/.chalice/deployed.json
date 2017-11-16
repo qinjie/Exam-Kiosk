@@ -1,0 +1,12 @@
+{
+  "dev": {
+    "api_handler_name": "exam-kiosk-dev",
+    "api_handler_arn": "arn:aws:lambda:ap-southeast-1:498107424281:function:exam-kiosk-dev",
+    "lambda_functions": {},
+    "backend": "api",
+    "chalice_version": "1.0.4",
+    "rest_api_id": "2cdh0n36vg",
+    "api_gateway_stage": "api",
+    "region": "ap-southeast-1"
+  }
+}
