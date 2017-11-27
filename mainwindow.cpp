@@ -66,10 +66,10 @@ void MainWindow::staticAlert(QString title, QString message, int type, int time,
     else if (tab == 3) show = this->ui->staticMessageSubmission;
     show->setTextFormat(Qt::RichText);
     if (type == 1) {
-        QString content = "<img src=':/img/success.png'><span style='color:#0f0'>  " + message + "</span>";
+        QString content = "<img src=':/img/success.png'><span style='color:#0f0; font-weight:bold;'>  " + message + "</span>";
         show->setText(content);
     } else if (type == 2) {
-        QString content = "<img src=':/img/error.png'><span style='color:#f00'>  " + message+ "</span>";
+        QString content = "<img src=':/img/error.png'><span style='color:#f00; font-weight:bold;'>  " + message+ "</span>";
         show->setText(content);
     }
     //this->curMsgTab = tab;
