@@ -24,7 +24,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -74,8 +74,8 @@
           <widget class="QLabel" name="label_2">
            <property name="geometry">
             <rect>
-             <x>30</x>
-             <y>60</y>
+             <x>40</x>
+             <y>50</y>
              <width>111</width>
              <height>16</height>
             </rect>
@@ -87,8 +87,8 @@
           <widget class="QLabel" name="label">
            <property name="geometry">
             <rect>
-             <x>30</x>
-             <y>30</y>
+             <x>40</x>
+             <y>20</y>
              <width>91</width>
              <height>16</height>
             </rect>
@@ -100,8 +100,8 @@
           <widget class="QLineEdit" name="seatLEStudentName">
            <property name="geometry">
             <rect>
-             <x>160</x>
-             <y>60</y>
+             <x>170</x>
+             <y>50</y>
              <width>181</width>
              <height>20</height>
             </rect>
@@ -110,11 +110,24 @@
           <widget class="QLineEdit" name="seatLEStudentNo">
            <property name="geometry">
             <rect>
-             <x>160</x>
-             <y>30</y>
+             <x>170</x>
+             <y>20</y>
              <width>181</width>
              <height>20</height>
             </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="staticMessageExamSeating">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>80</y>
+             <width>311</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
            </property>
           </widget>
          </widget>
@@ -211,7 +224,7 @@
            <property name="geometry">
             <rect>
              <x>40</x>
-             <y>50</y>
+             <y>30</y>
              <width>111</width>
              <height>16</height>
             </rect>
@@ -224,7 +237,7 @@
            <property name="geometry">
             <rect>
              <x>40</x>
-             <y>20</y>
+             <y>0</y>
              <width>91</width>
              <height>16</height>
             </rect>
@@ -237,7 +250,7 @@
            <property name="geometry">
             <rect>
              <x>190</x>
-             <y>50</y>
+             <y>30</y>
              <width>181</width>
              <height>20</height>
             </rect>
@@ -247,7 +260,7 @@
            <property name="geometry">
             <rect>
              <x>190</x>
-             <y>20</y>
+             <y>0</y>
              <width>181</width>
              <height>20</height>
             </rect>
@@ -257,7 +270,7 @@
            <property name="geometry">
             <rect>
              <x>40</x>
-             <y>80</y>
+             <y>60</y>
              <width>91</width>
              <height>16</height>
             </rect>
@@ -270,16 +283,34 @@
            <property name="geometry">
             <rect>
              <x>190</x>
-             <y>80</y>
+             <y>60</y>
              <width>181</width>
              <height>20</height>
             </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="staticMessageToiletTrips">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>90</y>
+             <width>441</width>
+             <height>21</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
            </property>
           </widget>
          </widget>
         </item>
         <item>
          <widget class="QTableWidget" name="toiletTableWidget">
+          <column>
+           <property name="text">
+            <string>New Column</string>
+           </property>
+          </column>
           <column>
            <property name="text">
             <string>New Column</string>
@@ -337,8 +368,8 @@
           <widget class="QLabel" name="label_20">
            <property name="geometry">
             <rect>
-             <x>40</x>
-             <y>70</y>
+             <x>30</x>
+             <y>50</y>
              <width>111</width>
              <height>16</height>
             </rect>
@@ -350,8 +381,8 @@
           <widget class="QLabel" name="label_21">
            <property name="geometry">
             <rect>
-             <x>40</x>
-             <y>40</y>
+             <x>30</x>
+             <y>20</y>
              <width>91</width>
              <height>16</height>
             </rect>
@@ -363,8 +394,8 @@
           <widget class="QLineEdit" name="subLEStudentName">
            <property name="geometry">
             <rect>
-             <x>170</x>
-             <y>70</y>
+             <x>160</x>
+             <y>50</y>
              <width>181</width>
              <height>20</height>
             </rect>
@@ -373,11 +404,24 @@
           <widget class="QLineEdit" name="subLEStudentNo">
            <property name="geometry">
             <rect>
-             <x>170</x>
-             <y>40</y>
+             <x>160</x>
+             <y>20</y>
              <width>181</width>
              <height>20</height>
             </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="staticMessageSubmission">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>90</y>
+             <width>401</width>
+             <height>21</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
            </property>
           </widget>
          </widget>

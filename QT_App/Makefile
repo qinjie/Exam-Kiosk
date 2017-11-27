@@ -299,6 +299,8 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_src.cpp
 qrc_src.cpp: ../src.qrc \
 		../config.ini \
+		../img/error.png \
+		../img/success.png \
 		../img/rfid.jpg
 	/usr/lib/arm-linux-gnueabihf/qt5/bin/rcc -name src ../src.qrc -o qrc_src.cpp
 

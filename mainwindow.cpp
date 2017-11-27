@@ -59,8 +59,62 @@ void MainWindow::alert(QString title, QString message, int type ,int time) {
     QTimer::singleShot(time, this, SLOT(resetMessageAlert()));
 }
 
+void MainWindow::staticAlert(QString title, QString message, int type, int time, int tab) {
+    QLabel* show;
+    if (tab == 1) show = this->ui->staticMessageExamSeating;
+    else if(tab == 2) show = this->ui->staticMessageToiletTrips;
+    else if (tab == 3) show = this->ui->staticMessageSubmission;
+    show->setTextFormat(Qt::RichText);
+    if (type == 1) {
+        QString content = "<img src=':/img/success.png'><span style='color:#0f0'>  " + message + "</span>";
+        show->setText(content);
+    } else if (type == 2) {
+        QString content = "<img src=':/img/error.png'><span style='color:#f00'>  " + message+ "</span>";
+        show->setText(content);
+    }
+    //this->curMsgTab = tab;
+//    if (tab == 1)
+//        QTimer::singleShot(time, this, SLOT(resetMessageStaticAlertTab1()));
+//    else if (tab == 2)
+//        QTimer::singleShot(time, this, SLOT(resetMessageStaticAlertTab2()));
+//    else if (tab == 3)
+//        QTimer::singleShot(time, this, SLOT(resetMessageStaticAlertTab3()));
+    if (this->mes_timer)
+        mes_timer->stop();
+    mes_timer = new QTimer(this);
+    mes_timer->setInterval(time);
+    mes_timer->setSingleShot(true);
+    if (tab == 1)
+       connect(mes_timer, SIGNAL(timeout()), SLOT(resetMessageStaticAlertTab1()));
+    else if (tab == 2)
+       connect(mes_timer, SIGNAL(timeout()), SLOT(resetMessageStaticAlertTab2()));
+    else if (tab == 3)
+       connect(mes_timer, SIGNAL(timeout()), SLOT(resetMessageStaticAlertTab3()));
+    mes_timer->start();
+
+}
+
 void MainWindow::resetMessageAlert() {
     msgBox.done(0);
+}
+
+void MainWindow::resetMessageStaticAlert() {
+    QLabel* show;
+    int tab = this->curMsgTab;
+    if (tab == 1) show = this->ui->staticMessageExamSeating;
+    else if(tab == 2) show = this->ui->staticMessageToiletTrips;
+    else if (tab == 3) show = this->ui->staticMessageSubmission;
+    show->setText("");
+}
+
+void MainWindow::resetMessageStaticAlertTab1() {
+    this->ui->staticMessageExamSeating->setText("");
+}
+void MainWindow::resetMessageStaticAlertTab2() {
+    this->ui->staticMessageToiletTrips->setText("");
+}
+void MainWindow::resetMessageStaticAlertTab3() {
+    this->ui->staticMessageSubmission->setText("");
 }
 
 void MainWindow::handleTag(QString id) {
@@ -140,7 +194,8 @@ void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
         qDebug() << "           Next work Error on Result Exam Seating";
         ui->seatLEStudentNo->setText("");
         ui->seatLEStudentName->setText("");
-        alert("Exam Seating", "Network Error!", 2, 5000);
+        //alert("Exam Seating", "Network Error!", 2, 5000);
+        staticAlert("Exam Seating", "Network Error!", 2, 10000, 1);
         return;
     } else {
         qDebug() << "           Read successfull on Exam seating Checking!";// << statusCode << " : " << str;
@@ -152,7 +207,8 @@ void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
         ui->seatLEStudentNo->setText("");
         ui->seatLEStudentName->setText("");
         qDebug() << "Message : " << obj["success"].toString() << " : " <<obj["message"].toString();
-        alert("Exam Seating", obj["message"].toString(), 2, 3000);
+        //alert("Exam Seating", obj["message"].toString(), 2, 3000);
+        staticAlert("Exam Seating", obj["message"].toString(), 2, 10000, 1);
         return;
     }
     QJsonArray jsonArray = doc.array();
@@ -180,7 +236,8 @@ void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
         insertDataToCellTableWithTab(rowCount, 4, obj["seat"].toString(), 0);
     }
     ui->seatTableWidget->scrollToBottom();
-    alert("Exam Seating", "Done", 1 , 1000);
+    //alert("Exam Seating", "Done", 1 , 1000);
+    this->staticAlert("Exam Seating", "Done", 1 , 7000, 1);
 }
 
 //draw table
@@ -213,7 +270,8 @@ void MainWindow::toiletTripsChecking(QString id){
         manager->get(QNetworkRequest(QUrl(url)));
     } else {
         qDebug() << "System is handling, please wait!";
-        alert("ToiLetTrips", "System is handling, please wait!", 2, 3000);
+        //alert("ToiLetTrips", "System is handling, please wait!", 2, 3000);
+        staticAlert("ToiLetTrips", "System is handling, please wait!", 2, 7000, 2);
     }
 }
 
@@ -223,7 +281,8 @@ void MainWindow::toiletTripsUserChecking(QNetworkReply *reply) {
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode != 200) {
         qDebug() << "           Next work Error on toilet trip checking";
-        alert("ToiLetTrips", "Network Error!", 2, 3000);
+        //alert("ToiLetTrips", "Network Error!", 2, 3000);
+        staticAlert("ToiLetTrips", "Network Error!", 2, 10000, 2);
         isHandleForToiletCheck = false;
         return;
     } else {
@@ -243,7 +302,8 @@ void MainWindow::toiletTripsUserChecking(QNetworkReply *reply) {
             if (role != "staff") {
                 qDebug() << "Invalid one Student and one user";
                 resetStateToiletTrips();
-                alert("ToiLetTrips", "Invalid staff!", 2, 3000);
+                //alert("ToiLetTrips", "Invalid staff!", 2, 3000);
+                staticAlert("ToiLetTrips", "Invalid staff!", 2, 10000, 2);
             } else {
                 ui->toiletLELecturerID->setText(obj["card"].toString());
                 toiletTripsGoOut(studentIDGoOut, currentStudentID);
@@ -252,7 +312,8 @@ void MainWindow::toiletTripsUserChecking(QNetworkReply *reply) {
     } else {
         if (role != "student") {
             qDebug() << "   Your'e not a Student";
-            alert("ToiLetTrips", "You're not a Student!", 2, 3000);
+            //alert("ToiLetTrips", "You're not a Student!", 2, 3000);
+            staticAlert("ToiLetTrips", "You're not a Student!", 2, 10000, 2);
             resetStateToiletTrips();
         } else {
             qDebug() << "   On Toilet Trip Checking Get List to check -> two case : goIn or Check to goOut";
@@ -287,7 +348,8 @@ void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode != 200) {
         qDebug() << "           Next work Error on toilet trip checking";
-        alert("ToiLetTrips", "Network Error!", 2, 3000);
+//        alert("ToiLetTrips", "Network Error!", 2, 3000);
+        staticAlert("ToiLetTrips", "Network Error!", 2, 10000, 2);
         isHandleForToiletCheck = false;
         return;
     } else {
@@ -309,7 +371,8 @@ void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
     }
     if (goOut) {
         qDebug() << "Student want to go out - Please insert the Staff card";
-        alert("ToiLetTrips", "Student want to go out, need staff checking", 1, 2000);
+//        alert("ToiLetTrips", "Student want to go out, need staff checking", 1, 2000);
+        staticAlert("ToiLetTrips", "Student want to go out, need staff checking", 1, 100000, 2);
         ui->toiletScanLabel->setText("Scan Staff card");
         drawTableData(jsonArray,1);
         studentIDGoOut = currentStudentID;
@@ -318,7 +381,8 @@ void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
     } else {
         qDebug() << "User come back";
         toiletTripsGoIn(currentStudentID);
-        alert("ToiLetTrips", "Student Go In", 1, 3000);
+//        alert("ToiLetTrips", "Student Go In", 1, 3000);
+        staticAlert("ToiLetTrips", "Student Go In", 1, 10000, 2);
     }
     ui->toiletTableWidget->scrollToBottom();
 }
@@ -357,7 +421,8 @@ void MainWindow::onResultToiletTripsGoIn(QNetworkReply *reply) {
     if (statusCode != 200) {
         qDebug() << "           Result : " << str;
         isHandleForToiletCheck = false;
-        alert("ToiLetTrips", "Network Error!", 2, 3000);
+//        alert("ToiLetTrips", "Network Error!", 2, 3000);
+        staticAlert("ToiLetTrips", "Network Error!", 2, 10000, 2);
         return;
     } else {
         qDebug() << "           Toilet Trip go in successfull!" << statusCode << " : " << str;
@@ -371,7 +436,8 @@ void MainWindow::onResultToiletTripsGoIn(QNetworkReply *reply) {
         ui->toiletLEStudentNo->setText("");
         ui->toiletLEStudentName->setText("");
         qDebug() << "Message : " << obj["success"].toString() << " : " <<obj["message"].toString();
-        alert("ToiLetTrips", obj["success"].toString(), 2, 3000);
+//        alert("ToiLetTrips", obj["success"].toString(), 2, 3000);
+        staticAlert("ToiLetTrips", obj["success"].toString(), 2, 10000, 2);
         return;
     }
     clearContentsTable(1);
@@ -379,7 +445,8 @@ void MainWindow::onResultToiletTripsGoIn(QNetworkReply *reply) {
     drawTableData(jsonArray, 1);
     ui->toiletScanLabel->setText("Scan Student Card");
     isHandleForToiletCheck = false;
-    alert("ToiLetTrips", "Done", 1, 1000);
+//    alert("ToiLetTrips", "Done", 1, 1000);
+    staticAlert("ToiLetTrips", "Done", 1, 10000, 2);
 }
 
 void MainWindow::toiletTripsGoOut(QString studentID, QString staffID) {
@@ -418,7 +485,8 @@ void MainWindow::onResultToiletTripsGoOut(QNetworkReply *reply) {
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode != 200) {
         qDebug() << "           Next work Error in certificate go out!";
-        alert("ToiLetTrips", "Network Error!", 2, 3000);
+//        alert("ToiLetTrips", "Network Error!", 2, 3000);
+        staticAlert("ToiLetTrips", "Network Error!", 2, 10000, 2);
         isHandleForToiletCheck = false;
         return;
     } else {
@@ -434,7 +502,8 @@ void MainWindow::onResultToiletTripsGoOut(QNetworkReply *reply) {
         ui->toiletLEStudentName->setText("");
         ui->toiletLELecturerID->setText("");
         qDebug() << "Message : " << obj["success"].toString() << " : " <<obj["message"].toString();
-        alert("ToiLetTrips", obj["message"].toString(), 2, 3000);
+//        alert("ToiLetTrips", obj["message"].toString(), 2, 3000);
+        staticAlert("ToiLetTrips", obj["message"].toString(), 2, 10000, 2);
         isWaitingForTeacher = false;
         currentStudentID = "";
         studentIDGoOut = "";
@@ -452,7 +521,8 @@ void MainWindow::onResultToiletTripsGoOut(QNetworkReply *reply) {
     studentIDGoOut = "";
     ui->toiletScanLabel->setText("Scan Student card");
     isHandleForToiletCheck = false;
-    alert("ToiLetTrips", "Done", 1, 1000);
+//    alert("ToiLetTrips", "Done", 1, 1000);
+    staticAlert("ToiLetTrips", "Done", 1, 10000, 2);
 }
 
 void MainWindow::submissonScriptChecking(QString id) {
@@ -489,7 +559,8 @@ void MainWindow::onResultSubmissonScriptChecking(QNetworkReply *reply) {
     if (statusCode != 200) {
         qDebug() << "           Interal System error";
         qDebug() << "               on result : " << str;
-        alert("Submission", "Network Error!", 2, 3000);
+//        alert("Submission", "Network Error!", 2, 3000);
+        staticAlert("Submission", "Network Error!", 2, 10000, 3);
         return;
     } else {
         qDebug() << "           On Submit successfull!";// << statusCode << " : " << str;
@@ -505,7 +576,8 @@ void MainWindow::onResultSubmissonScriptChecking(QNetworkReply *reply) {
         ui->subLEStudentNo->setText("");
         ui->subLEStudentName->setText("");
         qDebug() << "Message : " << obj["success"].toString() << " : " <<obj["message"].toString();
-        alert("Submission", obj["message"].toString(), 2, 3000);
+//        alert("Submission", obj["message"].toString(), 2, 3000);
+        staticAlert("Submission", obj["message"].toString(), 2, 10000, 3);
         return;
     }
     clearContentsTable(2);
@@ -530,7 +602,8 @@ void MainWindow::onResultSubmissonScriptChecking(QNetworkReply *reply) {
         insertDataToCellTableWithTab(rowCount, 3, obj["submission_time"].toString(), 2);
     }
     ui->subTableWidget->scrollToBottom();
-    alert("Submission", "Done", 1, 1000);
+//    alert("Submission", "Done", 1, 1000);
+    staticAlert("Submission", "Done", 1, 10000, 3);
 }
 
 void MainWindow::clearContentsTable(int tab) {

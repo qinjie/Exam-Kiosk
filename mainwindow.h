@@ -6,6 +6,7 @@
 #include "QtNetwork"
 #include "QTableWidget"
 #include "QMessageBox"
+#include "QTimer"
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +35,7 @@ public:
     void        drawTableData(QJsonArray jsonArray, int tab);
 
     void        alert(QString title, QString message, int type ,int time);
+    void        staticAlert(QString title, QString message, int type ,int time, int tab);
 
     ~MainWindow();
 
@@ -52,6 +54,10 @@ private slots:
     void        onResultToiletTripsGoOut(QNetworkReply*);
 
     void        resetMessageAlert();
+    void        resetMessageStaticAlert();
+    void        resetMessageStaticAlertTab1();
+    void        resetMessageStaticAlertTab2();
+    void        resetMessageStaticAlertTab3();
 
 protected:
     void        showEvent(QShowEvent *event);
@@ -61,6 +67,7 @@ private:
     Ui::MainWindow      *ui;
     bool                listenForTag;
     bool                isHandleForToiletCheck = false;
+    int                 curMsgTab;
     ListeningTag        *listeningTag;
     bool                isWaitingForTeacher;
     QString             currentStudentID;
@@ -74,6 +81,8 @@ private:
     QString             getListTripsCheckingURL;
 
     QMessageBox         msgBox;
+
+    QTimer*             mes_timer;
 };
 
 #endif // MAINWINDOW_H

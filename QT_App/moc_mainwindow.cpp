@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[15];
-    char stringdata[261];
+    QByteArrayData data[19];
+    char stringdata[369];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,7 +43,11 @@ QT_MOC_LITERAL(10, 138, 23),
 QT_MOC_LITERAL(11, 162, 23),
 QT_MOC_LITERAL(12, 186, 31),
 QT_MOC_LITERAL(13, 218, 24),
-QT_MOC_LITERAL(14, 243, 17)
+QT_MOC_LITERAL(14, 243, 17),
+QT_MOC_LITERAL(15, 261, 23),
+QT_MOC_LITERAL(16, 285, 27),
+QT_MOC_LITERAL(17, 313, 27),
+QT_MOC_LITERAL(18, 341, 27)
     },
     "MainWindow\0resizeTable\0\0handleTag\0id\0"
     "tabSelected\0onResultGetInfor\0"
@@ -51,7 +55,11 @@ QT_MOC_LITERAL(14, 243, 17)
     "onResultToiletTripsChecking\0"
     "toiletTripsUserChecking\0onResultToiletTripsGoIn\0"
     "onResultSubmissonScriptChecking\0"
-    "onResultToiletTripsGoOut\0resetMessageAlert"
+    "onResultToiletTripsGoOut\0resetMessageAlert\0"
+    "resetMessageStaticAlert\0"
+    "resetMessageStaticAlertTab1\0"
+    "resetMessageStaticAlertTab2\0"
+    "resetMessageStaticAlertTab3"
 };
 #undef QT_MOC_LITERAL
 
@@ -61,7 +69,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      11,   14, // methods
+      15,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -69,17 +77,21 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   69,    2, 0x08 /* Private */,
-       3,    1,   70,    2, 0x08 /* Private */,
-       5,    0,   73,    2, 0x08 /* Private */,
-       6,    1,   74,    2, 0x08 /* Private */,
-       8,    1,   77,    2, 0x08 /* Private */,
-       9,    1,   80,    2, 0x08 /* Private */,
-      10,    1,   83,    2, 0x08 /* Private */,
-      11,    1,   86,    2, 0x08 /* Private */,
-      12,    1,   89,    2, 0x08 /* Private */,
-      13,    1,   92,    2, 0x08 /* Private */,
-      14,    0,   95,    2, 0x08 /* Private */,
+       1,    0,   89,    2, 0x08 /* Private */,
+       3,    1,   90,    2, 0x08 /* Private */,
+       5,    0,   93,    2, 0x08 /* Private */,
+       6,    1,   94,    2, 0x08 /* Private */,
+       8,    1,   97,    2, 0x08 /* Private */,
+       9,    1,  100,    2, 0x08 /* Private */,
+      10,    1,  103,    2, 0x08 /* Private */,
+      11,    1,  106,    2, 0x08 /* Private */,
+      12,    1,  109,    2, 0x08 /* Private */,
+      13,    1,  112,    2, 0x08 /* Private */,
+      14,    0,  115,    2, 0x08 /* Private */,
+      15,    0,  116,    2, 0x08 /* Private */,
+      16,    0,  117,    2, 0x08 /* Private */,
+      17,    0,  118,    2, 0x08 /* Private */,
+      18,    0,  119,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -92,6 +104,10 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, 0x80000000 | 7,    2,
     QMetaType::Void, 0x80000000 | 7,    2,
     QMetaType::Void, 0x80000000 | 7,    2,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
 
        0        // eod
@@ -113,6 +129,10 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 8: _t->onResultSubmissonScriptChecking((*reinterpret_cast< QNetworkReply*(*)>(_a[1]))); break;
         case 9: _t->onResultToiletTripsGoOut((*reinterpret_cast< QNetworkReply*(*)>(_a[1]))); break;
         case 10: _t->resetMessageAlert(); break;
+        case 11: _t->resetMessageStaticAlert(); break;
+        case 12: _t->resetMessageStaticAlertTab1(); break;
+        case 13: _t->resetMessageStaticAlertTab2(); break;
+        case 14: _t->resetMessageStaticAlertTab3(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -196,13 +216,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 11)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 15;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 11)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 15;
     }
     return _id;
 }
