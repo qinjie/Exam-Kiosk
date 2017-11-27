@@ -319,6 +319,7 @@ void MainWindow::toiletTripsUserChecking(QNetworkReply *reply) {
             qDebug() << "   On Toilet Trip Checking Get List to check -> two case : goIn or Check to goOut";
             ui->toiletLEStudentNo->setText(obj["card"].toString());
             ui->toiletLEStudentName->setText(obj["name"].toString());
+            ui->toiletLELecturerID->setText("");
             QString url = getListTripsCheckingURL;
             url.append(currentStudentID);
             QNetworkAccessManager *manager = new QNetworkAccessManager(this);
