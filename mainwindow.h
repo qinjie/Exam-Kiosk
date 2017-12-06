@@ -31,11 +31,14 @@ public:
     void        resetStateToiletTrips();
 
     void        insertDataToCellTableWithTab(int32_t row, int32_t col, QString data, int32_t tab);
+    void        insertDataToCellTableWithTab(int32_t row, int32_t col, QString data, int32_t tab, QString color);
 
-    void        drawTableData(QJsonArray jsonArray, int tab);
+    void        drawTableData(QJsonArray jsonArray, int tab, QString studentIDGoOut);
 
     void        alert(QString title, QString message, int type ,int time);
     void        staticAlert(QString title, QString message, int type ,int time, int tab);
+
+    void        changeColorRowTable(int row, int color, int tab);
 
     ~MainWindow();
 

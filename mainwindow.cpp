@@ -66,10 +66,10 @@ void MainWindow::staticAlert(QString title, QString message, int type, int time,
     else if (tab == 3) show = this->ui->staticMessageSubmission;
     show->setTextFormat(Qt::RichText);
     if (type == 1) {
-        QString content = "<img src=':/img/success.png'><span style='color:#0f0; font-weight:bold;'>  " + message + "</span>";
+        QString content = "<img src=':/img/success.png'><span style='color:green; font-weight:bold;'>  " + message + "</span>";
         show->setText(content);
     } else if (type == 2) {
-        QString content = "<img src=':/img/error.png'><span style='color:#f00; font-weight:bold;'>  " + message+ "</span>";
+        QString content = "<img src=':/img/error.png'><span style='color:red; font-weight:bold;'>  " + message+ "</span>";
         show->setText(content);
     }
     //this->curMsgTab = tab;
@@ -151,6 +151,19 @@ void MainWindow::insertDataToCellTableWithTab(int32_t row, int32_t col, QString 
     }
 }
 
+void MainWindow::insertDataToCellTableWithTab(int32_t row, int32_t col, QString data, int tab, QString color) {
+    QString str = "<font color = "+ color + "> <b>" + data + "</b>";
+    QLabel *text = new QLabel(str);
+    text->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+    if (tab == 0) {
+        ui->seatTableWidget->setCellWidget(row, col, text);
+    } else if (tab == 1) {
+        ui->toiletTableWidget->setCellWidget(row, col, text);
+    } else if (tab == 2) {
+        ui->subTableWidget->setCellWidget(row, col, text);
+    }
+}
+
 //get infor of Student/Staff
 void MainWindow::getInfor(QString id) {
     qDebug() << "   On Link Get Infor";
@@ -213,6 +226,52 @@ void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
     }
     QJsonArray jsonArray = doc.array();
     bool isFirstRow = true;
+    QDateTime curDateTime = QDateTime::currentDateTime();
+    //qDebug() << "Current Date: " << curDate.toString("yyyy-MM-dd");
+    int redIndex = -1;
+    int blueIndex = -1;
+    qint64 spaceMinTime;
+    int rowCount = -1;
+    QString color[1000];
+    foreach (const QJsonValue & value, jsonArray) {
+        QJsonObject obj = value.toObject();
+
+        //int rowCount = ui->seatTableWidget->rowCount();
+        //ui->seatTableWidget->insertRow(rowCount);
+        //qDebug() << "Row Count : " << rowCount;
+        rowCount++;
+        QDateTime examStartDateTime = QDateTime::fromString(obj["date"].toString() + " " + obj["start_time"].toString()
+                , "yyyy-MM-dd h:mm:ss");
+        QDateTime examEndDateTime = QDateTime::fromString(obj["date"].toString() + " " + obj["end_time"].toString()
+                , "yyyy-MM-dd h:mm:ss");
+        if (curDateTime > examEndDateTime)
+            color[rowCount] = "black";
+        if (curDateTime < examStartDateTime)
+            color[rowCount] = "green";
+        //Check examing...
+        if (curDateTime >= examStartDateTime && curDateTime < examEndDateTime) {
+            redIndex = rowCount;
+            color[rowCount] = "red";
+        }
+        //quint64 diffTime = curDateTime.secsTo(examStartDateTime);
+        //qDebug() << "Exam: " + examDateTime.toString("yyyy-MM-dd h:mm:ss") + " " + "Cur: " +curDateTime.toString("yyyy-MM-dd h:mm:ss") + " Diff: " + QString::number(diffTime);
+
+        //Get nearest exam
+        if (curDateTime < examStartDateTime) {
+            if (blueIndex == -1) {
+                blueIndex = rowCount;
+                spaceMinTime = curDateTime.secsTo(examStartDateTime);
+            } else {
+                if (curDateTime.secsTo(examStartDateTime) < spaceMinTime) {
+                    spaceMinTime = curDateTime.secsTo(examStartDateTime);
+                    blueIndex = rowCount;
+                }
+            }
+        }
+        qDebug() << "Blue :" << blueIndex << "Red : " << redIndex;
+    }
+    color[blueIndex] = "blue";
+
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject obj = value.toObject();
         //QString str = obj["date"].toString() + obj["start_time"].toString() + obj["venue"].toString()
@@ -226,35 +285,52 @@ void MainWindow::onResultexamSeatingSearching(QNetworkReply *reply) {
         int rowCount = ui->seatTableWidget->rowCount();
         ui->seatTableWidget->insertRow(rowCount);
         //qDebug() << "Row Count : " << rowCount;
+
         QDate date = QDate::fromString(obj["date"].toString(),"yyyy-MM-dd");
         QTime startTime = QTime::fromString(obj["start_time"].toString(), "h:mm:ss");
         QTime endTime = QTime::fromString(obj["end_time"].toString(), "h:mm:ss");
-        insertDataToCellTableWithTab(rowCount, 0, date.toString("yyyy MMM dd (dddd)"), 0);
-        insertDataToCellTableWithTab(rowCount, 1, startTime.toString("h:mmap") + " - " + endTime.toString("h:mmap"), 0);
-        insertDataToCellTableWithTab(rowCount, 2, obj["module"].toString(), 0);
-        insertDataToCellTableWithTab(rowCount, 3, obj["venue"].toString(), 0);
-        insertDataToCellTableWithTab(rowCount, 4, obj["seat"].toString(), 0);
+
+        //QString color = "black";
+
+        insertDataToCellTableWithTab(rowCount, 0, date.toString("yyyy MMM dd (dddd)"), 0, color[rowCount]);
+        insertDataToCellTableWithTab(rowCount, 1, startTime.toString("h:mmap") + " - " + endTime.toString("h:mmap"), 0, color[rowCount]);
+        insertDataToCellTableWithTab(rowCount, 2, obj["module"].toString(), 0, color[rowCount]);
+        insertDataToCellTableWithTab(rowCount, 3, obj["venue"].toString(), 0, color[rowCount]);
+        insertDataToCellTableWithTab(rowCount, 4, obj["seat"].toString(), 0, color[rowCount]);
+
+        if (rowCount == blueIndex) {
+            ui->seatTableWidget->scrollToBottom();
+        }
     }
-    ui->seatTableWidget->scrollToBottom();
+
+    //ui->seatTableWidget->scrollToBottom();
     //alert("Exam Seating", "Done", 1 , 1000);
-    this->staticAlert("Exam Seating", "Done", 1 , 7000, 1);
+    this->staticAlert("Exam Seating", "Exam seating done", 1 , 7000, 1);
 }
 
 //draw table
-void MainWindow::drawTableData(QJsonArray jsonArray, int tab) {
+void MainWindow::drawTableData(QJsonArray jsonArray, int tab, QString studentIDGoOut) {
 
     clearContentsTable(tab);
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject obj = value.toObject();
         int rowCount = ui->toiletTableWidget->rowCount();
         ui->toiletTableWidget->insertRow(rowCount);
-        insertDataToCellTableWithTab(rowCount, 0, obj["card"].toString(), tab);
-        insertDataToCellTableWithTab(rowCount, 1, obj["name"].toString(), tab);
-        insertDataToCellTableWithTab(rowCount, 2, obj["time_out"].toString(), tab);
-        insertDataToCellTableWithTab(rowCount, 3, obj["time_in"].toString(), tab);
-        insertDataToCellTableWithTab(rowCount, 4, obj["staff"].toString(), tab);
-        //qDebug() << rowCount << " : " << obj["card"].toString() << " " << obj["name"].toString() << " " << obj["staff"].toString() << " "
-                 //<< obj["time_out"].toString() << " " << obj["time_in"].toString();
+        if (studentIDGoOut == obj["card"].toString()) {
+            insertDataToCellTableWithTab(rowCount, 0, obj["card"].toString(), tab, "blue");
+            insertDataToCellTableWithTab(rowCount, 1, obj["name"].toString(), tab, "blue");
+            insertDataToCellTableWithTab(rowCount, 2, obj["time_out"].toString(), tab, "blue");
+            insertDataToCellTableWithTab(rowCount, 3, obj["time_in"].toString(), tab, "blue");
+            insertDataToCellTableWithTab(rowCount, 4, obj["staff"].toString(), tab, "blue");
+        } else {
+            insertDataToCellTableWithTab(rowCount, 0, obj["card"].toString(), tab);
+            insertDataToCellTableWithTab(rowCount, 1, obj["name"].toString(), tab);
+            insertDataToCellTableWithTab(rowCount, 2, obj["time_out"].toString(), tab);
+            insertDataToCellTableWithTab(rowCount, 3, obj["time_in"].toString(), tab);
+            insertDataToCellTableWithTab(rowCount, 4, obj["staff"].toString(), tab);
+            //qDebug() << rowCount << " : " << obj["card"].toString() << " " << obj["name"].toString() << " " << obj["staff"].toString() << " "
+                     //<< obj["time_out"].toString() << " " << obj["time_in"].toString();
+        }
     }
     ui->toiletTableWidget->scrollToBottom();
 }
@@ -375,7 +451,7 @@ void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
 //        alert("ToiLetTrips", "Student want to go out, need staff checking", 1, 2000);
         staticAlert("ToiLetTrips", "Student want to go out, need staff checking", 1, 100000, 2);
         ui->toiletScanLabel->setText("Scan Staff card");
-        drawTableData(jsonArray,1);
+        drawTableData(jsonArray,1, currentStudentID);
         studentIDGoOut = currentStudentID;
         isWaitingForTeacher = true;
         isHandleForToiletCheck = false;
@@ -383,7 +459,7 @@ void MainWindow::onResultToiletTripsChecking(QNetworkReply *reply) {
         qDebug() << "User come back";
         toiletTripsGoIn(currentStudentID);
 //        alert("ToiLetTrips", "Student Go In", 1, 3000);
-        staticAlert("ToiLetTrips", "Student Go In", 1, 10000, 2);
+        staticAlert("ToiLetTrips", "Student Go In...", 1, 10000, 2);
     }
     ui->toiletTableWidget->scrollToBottom();
 }
@@ -443,11 +519,11 @@ void MainWindow::onResultToiletTripsGoIn(QNetworkReply *reply) {
     }
     clearContentsTable(1);
     QJsonArray jsonArray = doc.array();
-    drawTableData(jsonArray, 1);
+    drawTableData(jsonArray, 1, currentStudentID);
     ui->toiletScanLabel->setText("Scan Student Card");
     isHandleForToiletCheck = false;
 //    alert("ToiLetTrips", "Done", 1, 1000);
-    staticAlert("ToiLetTrips", "Done", 1, 10000, 2);
+    //staticAlert("ToiLetTrips", "Done", 1, 10000, 2);
 }
 
 void MainWindow::toiletTripsGoOut(QString studentID, QString staffID) {
@@ -515,7 +591,7 @@ void MainWindow::onResultToiletTripsGoOut(QNetworkReply *reply) {
     //clearContentsTable(1);
     qDebug() << "Drawing toilet Table";
     QJsonArray jsonArray = doc.array();
-    drawTableData(jsonArray, 1);
+    drawTableData(jsonArray, 1, studentIDGoOut);
 
     isWaitingForTeacher = false;
     currentStudentID = "";
@@ -523,7 +599,7 @@ void MainWindow::onResultToiletTripsGoOut(QNetworkReply *reply) {
     ui->toiletScanLabel->setText("Scan Student card");
     isHandleForToiletCheck = false;
 //    alert("ToiLetTrips", "Done", 1, 1000);
-    staticAlert("ToiLetTrips", "Done", 1, 10000, 2);
+    staticAlert("ToiLetTrips", "Student checked go out successful!", 1, 10000, 2);
 }
 
 void MainWindow::submissonScriptChecking(QString id) {
@@ -597,14 +673,21 @@ void MainWindow::onResultSubmissonScriptChecking(QNetworkReply *reply) {
         int rowCount = ui->subTableWidget->rowCount();
         ui->subTableWidget->insertRow(rowCount);
         //qDebug() << "Row Count : " << rowCount;
-        insertDataToCellTableWithTab(rowCount, 0, obj["card"].toString(), 2);
-        insertDataToCellTableWithTab(rowCount, 1, obj["name"].toString(), 2);
-        insertDataToCellTableWithTab(rowCount, 2, obj["module"].toString(), 2);
-        insertDataToCellTableWithTab(rowCount, 3, obj["submission_time"].toString(), 2);
+        if (obj["sender"].toBool()) {
+            insertDataToCellTableWithTab(rowCount, 0, obj["card"].toString(), 2, "blue");
+            insertDataToCellTableWithTab(rowCount, 1, obj["name"].toString(), 2, "blue");
+            insertDataToCellTableWithTab(rowCount, 2, obj["module"].toString(), 2, "blue");
+            insertDataToCellTableWithTab(rowCount, 3, obj["submission_time"].toString(), 2, "blue");
+        } else {
+            insertDataToCellTableWithTab(rowCount, 0, obj["card"].toString(), 2, "black");
+            insertDataToCellTableWithTab(rowCount, 1, obj["name"].toString(), 2, "black");
+            insertDataToCellTableWithTab(rowCount, 2, obj["module"].toString(), 2, "black");
+            insertDataToCellTableWithTab(rowCount, 3, obj["submission_time"].toString(), 2, "black");
+        }
     }
     ui->subTableWidget->scrollToBottom();
 //    alert("Submission", "Done", 1, 1000);
-    staticAlert("Submission", "Done", 1, 10000, 3);
+    staticAlert("Submission", "Submission sucessful!", 1, 10000, 3);
 }
 
 void MainWindow::clearContentsTable(int tab) {
