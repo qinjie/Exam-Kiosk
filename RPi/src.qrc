@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/rfid.jpg</file>
+        <file>config.ini</file>
+        <file>img/error.png</file>
+        <file>img/success.png</file>
+    </qresource>
+</RCC>
